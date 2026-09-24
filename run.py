@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Optional
 
 import fire
@@ -9,7 +10,6 @@ from constant import FileType, FILE_TYPE_MAPPING, CONVERSION_MAPPING
 
 class ConverterRunner:
 
-    # TODO: might need to refactor and add single target file
     @staticmethod
     def convert(
         source_path: str,
@@ -17,8 +17,10 @@ class ConverterRunner:
         source_type: str = ".docx",
         target_type: str = ".pdf",
     ) -> None:
-        ...
-
+        assert Path(source_path).name.endswith(source_type.value), "Source type is not consistent."
+        assert Path(target_path).name.endswith(target_type.value), "Target type is not consistent."
+        CONVERSION_MAPPING[(source_type, target_type)](source_path, target_path)
+        logger.success(f"Successfully converted {source_path} to {target_path}!")
 
     @staticmethod
     def recursive_convert(
